@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+  <div class="panel-heading">{{list-title}} <button {{action 'toggleModal'}} class="pull-right">{{fa-icon "plus"}}</button></div>
+  <div class="panel-body">
+    <div class="list-group">
+      {{#each model as |item|}}
+      {{#link-to 'chat.room' item.name class="list-group-item"}}{{item.name}}{{/link-to}}
+      {{/each}}
+    </div>
+  </div>
+</div>
+
+
+{{#if isShowingModal}}
+  {{#tether-dialog close='toggleModal'
+                   hasOverlay=true
+                   clickOutsideToClose=true }}
+    <h2>New Chat Room</h2>
+    Name: {{input type='text' value=name}}
+    <button {{action 'createRoom' model name}}>Create Room</button>
+{{/tether-dialog}}
+{{/if}}

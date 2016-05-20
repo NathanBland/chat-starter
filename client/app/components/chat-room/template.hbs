@@ -1,0 +1,28 @@
+<div class="col-md-6">
+    <div class="chat">
+        {{#each model.messages as |message|}}
+        <div class="message">
+            <div>
+                <p>{{message.sender}}: {{message.text}}</p>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+    <form class="form-inline">
+        <div class="form-group" style='width:100%'>
+            {{input type='text' style="width:89%" class="form-control" id='chatInput' value=chatInput}}
+            <button {{action "sendChat" }}>Send</button>
+        </div>
+    </form>
+</div>
+<div class="col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">Users</div>
+        <div class="panel-body">
+            <div class="list-group">
+                {{#each userList as |user|}} {{user}} {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
