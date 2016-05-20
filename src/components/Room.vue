@@ -15,7 +15,7 @@
   import userChip from './UserChip'
   import messageList from './messageList'
   import messageInput from './messageInput'
-  import auth from '../auth'
+  import auth from '../assets/auth'
   import {router} from '../main'
   import io from 'socket.io-client'
   
@@ -34,33 +34,29 @@
       }
     },
     ready: function () {
+      let myVue = this
+      var socket = io.connect('//resound-api.herokuapp.com', {
+        query: 'token=' + Lockr.get('token')
+      })
+      this.$set('socket', socket)
+      socket.on('rejected', function (data) {
+        console.log('we must have been bad. :(')
+      })
+      socket.on('authenticated', function (data) {
+        console.log('Yay us!')
+      })
+      socket.on('joined', function (data) {
+        console.log('joined room:', data)
+      })
+      socket.on('message', function (data) {
+        myVue.messages.push({user: data.user, msg: data.msg})
+      })
       this.$http({url: 'room/' + this.$route.params.room, method: 'GET'}).then(function (res) {
-        console.log('res:', res)
+        console.log('exists res:', res)
         this.$set('messages', res.data.messages)
         this.$set('users', res.data.users)
-        var socket = io.connect('//resound-api.herokuapp.com', {
-          query: 'token=' + Lockr.get('token')
-        })
-        this.$set('socket', socket)
-        let myVue = this
-        socket.on('connect', function (data) {
-          // console.log('got Socket Connection:', data)
-          socket.emit('join', {room: res.data.alias})
-        })
-        socket.on('rejected', function (data) {
-          console.log('we must have been bad. :(')
-        })
-        socket.on('authenticated', function (data) {
-          console.log('Yay us!')
-        })
-        socket.on('joined', function (data) {
-          console.log('joined room:', data)
-        })
-        socket.on('message', function (data) {
-          myVue.messages.push({user: data.user, msg: data.msg})
-        })
       }, function (res) {
-        console.log('err:', res)
+        console.log('Room isnt a thing?:', res)
         if (!res.ok) {
           console.log('trying to create room')
           this.$http({
@@ -70,9 +66,21 @@
           }).then(function (res) {
             console.log('success:', res)
             router.go('/room/' + res.data.alias)
+            this.$set('messages', res.data.messages)
+            this.$set('users', res.data.users)
+            socket.on('connect', function (data) {
+                // console.log('got Socket Connection:', data)
+              socket.emit('join', {room: res.data.alias})
+            })
           }, function (res) {
-            console.log('err:', res)
+            console.log('Room is already a thing!:', res)
             router.go('/room/' + res.data.room.alias)
+            this.$set('messages', res.data.room.messages)
+            this.$set('users', res.data.room.users)
+            socket.on('connect', function (data) {
+            // console.log('got Socket Connection:', data)
+              socket.emit('join', {room: res.data.room.alias})
+            })
           })
         }
       })
@@ -91,6 +99,9 @@
     route: {
       canActivate () {
         return auth.user.authenticated
+      },
+      canReuse () {
+        return false
       }
     },
     props: ['room']

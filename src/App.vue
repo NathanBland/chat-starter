@@ -24,7 +24,7 @@
 <script>
   import Sidebar from './components/Sidebar'
   // import Lockr from 'lockr'
-  import auth from './auth'
+  import auth from './assets/auth'
   // import {router} from './main'
   export default {
     components: {'sidebar': Sidebar},

@@ -6,7 +6,7 @@ import Room from './components/Room'
 import SignUp from './components/SignUp'
 import Login from './components/Login'
 import Error from './components/Error'
-import auth from './auth'
+import auth from './assets/auth'
 import Lockr from 'lockr'
 
 import VueRouter from 'vue-router'

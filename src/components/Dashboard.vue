@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import auth from '../auth'
+  import auth from '../assets/auth'
   import {router} from '../main'
   // import Lockr from 'lockr'
   export default {

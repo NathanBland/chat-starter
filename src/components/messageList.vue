@@ -3,7 +3,7 @@
     .card.message(v-for='message in messages')
       .card-body
         .chip-sm
-          figure.avatar.avatar-xl(data-initial='{{message.user | limitBy 2}}', style='background-color: #5764c6;')
+          figure.avatar.avatar-xl(data-initial='{{message.user || message.user_id.username | limitBy 2}}', style='background-color: #5764c6;')
           span.chip-name {{message.user || message.user_id.username}}
         span  {{message.msg || message.message}}
             
